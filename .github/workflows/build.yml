@@ -17,7 +17,18 @@ jobs:
             -v ${{ github.workspace }}:/build \
             -w /build \
             theypsilon/quartus-lite-c5:17.0.2.docker0 \
-            bash -c 'export LD_LIBRARY_PATH="/opt/intelFPGA_lite/quartus/linux64:$LD_LIBRARY_PATH"; /opt/intelFPGA_lite/quartus/linux64/quartus_sh --flow compile SYSTEM11.qpf'
+            bash -xc '
+              echo "==== START ===="
+              pwd
+              ls -la
+              export LD_LIBRARY_PATH="/opt/intelFPGA_lite/quartus/linux64:$LD_LIBRARY_PATH"
+              /opt/intelFPGA_lite/quartus/linux64/quartus_sh --flow compile SYSTEM11.qpf
+              RC=$?
+              echo "==== QUARTUS EXIT CODE: $RC ===="
+              echo "---- output_files ----"
+              ls -la output_files || echo "no output_files directory"
+              exit $RC
+            '
 
       - name: Upload RBF
         uses: actions/upload-artifact@v4

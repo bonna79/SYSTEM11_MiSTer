@@ -1,0 +1,26 @@
+name: Build RBF
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile with Quartus (inside Docker)
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/build \
+            -w /build \
+            theypsilon/quartus-lite-c5:17.0.2.docker0 \
+            bash -c 'QSH=$(find / -iname "quartus_sh" 2>/dev/null | grep -v uninstall | head -n1); echo "Trovato in: $QSH"; "$QSH" --flow compile Arcade-SegaSystem32Multi.qpf'
+
+      - name: Upload RBF
+        uses: actions/upload-artifact@v4
+        with:
+          name: rbf-compilato
+          path: output_files/*.rbf

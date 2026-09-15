@@ -22,6 +22,10 @@ jobs:
               pwd
               ls -la
               export LD_LIBRARY_PATH="/opt/intelFPGA_lite/quartus/linux64:$LD_LIBRARY_PATH"
+              export PATH="/opt/intelFPGA_lite/quartus/linux64:/opt/intelFPGA_lite/quartus/bin:$PATH"
+              which quartus_map
+              which quartus_fit
+              which quartus_asm
               /opt/intelFPGA_lite/quartus/linux64/quartus_sh --flow compile SYSTEM11.qpf
               RC=$?
               echo "==== QUARTUS EXIT CODE: $RC ===="
